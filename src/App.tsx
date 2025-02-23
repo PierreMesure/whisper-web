@@ -22,21 +22,33 @@ function App() {
             </div>
 
             <footer className='text-center mt-4'>
-                <b>OBS: Ljudet transkriberas helt lokalt.
-                <br/>För att göra det laddar webbsidan ner en AI-modell. Rensa webbläsarens cache om du vill ta bort den.</b>
-                <br/>Skapad av Pierre Mesure med färska Whisper-modeller från {" "}
+                <b>OBS: Ljudet transkriberas helt lokalt. För att göra det laddar webbsidan ner en AI-modell.</b>
+                <br/>Skapad av {" "}
+                <a
+                    className='underline'
+                    href='https://www.linkedin.com/in/pierremesure/'
+                >
+                    Pierre Mesure
+                </a> med färska Whisper-modeller från {" "}
                 <a
                     className='underline'
                     href='https://www.kb.se/samverkan-och-utveckling/nytt-fran-kb/nyheter-samverkan-och-utveckling/2025-02-20-valtranad-ai-modell-forvandlar-tal-till-text.html'
                 >
                     Kungliga Bibliotekets KBLab
-                </a> ♥️ och {" "}
+                </a> ♥️
+                <br/>och {" "}
                 <a
                     className='underline'
                     href='https://github.com/PierreMesure/whisper-web'
                 >
                     öppen källkod
-                </a> 🤗
+                </a> 🤗. Hosted i 🇪🇺 med {" "}
+                <a
+                    className='underline'
+                    href='https://statichost.eu'
+                >
+                    statichost.eu
+                </a>.
             </footer>
         </div>
     );
