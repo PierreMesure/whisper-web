@@ -19,3 +19,7 @@ This repository is a fork of [Xenova/whisper-web](https://github.com/xenova/whis
     ```
 
 3. Open the link (e.g., [localhost:5173/](http://localhost:5173/)) in your browser.
+
+## Credits
+
+The logo is a modification of the [elk mastodon client](https://github.com/elk-zone/elk/)'s.
