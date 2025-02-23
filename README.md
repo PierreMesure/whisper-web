@@ -1,20 +1,13 @@
-# Whisper Web
+# KB-Whisper Web
 
-ML-powered speech recognition directly in your browser! Built with [🤗 Transformers.js](https://github.com/xenova/transformers.js).
-
-Check out the demo site [here](https://huggingface.co/spaces/Xenova/whisper-web). 
-
-> [!IMPORTANT]  
-> Experimental WebGPU support has been added to [this branch](https://github.com/xenova/whisper-web/tree/experimental-webgpu) ([demo](https://huggingface.co/spaces/Xenova/whisper-webgpu)), if you'd like to run with GPU acceleration!
-
-https://github.com/xenova/whisper-web/assets/26504141/fb170d84-9678-41b5-9248-a112ecc74c27
+This repository is a fork of [Xenova/whisper-web](https://github.com/xenova/whisper-web). The website has been translated to Swedish and allows for easy transcription of Swedish audio using the [Swedish kb-whisper models](https://huggingface.co/KBLab/kb-whisper-tiny) fine-tuned by the [Swedish National library](https://www.kb.se/samverkan-och-utveckling/nytt-fran-kb/nyheter-samverkan-och-utveckling/2025-02-20-valtranad-ai-modell-forvandlar-tal-till-text.html) ♥️.
 
 ## Running locally
 
 1. Clone the repo and install dependencies:
 
     ```bash
-    git clone https://github.com/xenova/whisper-web.git
+    git clone https://github.com/PierreMesure/whisper-web.git
     cd whisper-web
     npm install
     ```
@@ -24,7 +17,5 @@ https://github.com/xenova/whisper-web/assets/26504141/fb170d84-9678-41b5-9248-a1
     ```bash
     npm run dev
     ```
-    > Firefox users need to change the `dom.workers.modules.enabled` setting in `about:config` to `true` to enable Web Workers.
-    > Check out [this issue](https://github.com/xenova/whisper-web/issues/8) for more details.
 
-3. Open the link (e.g., [http://localhost:5173/](http://localhost:5173/)) in your browser.
+3. Open the link (e.g., [localhost:5173/](http://localhost:5173/)) in your browser.
