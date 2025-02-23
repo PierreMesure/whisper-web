@@ -211,7 +211,7 @@ export function AudioManager(props: { transcriber: Transcriber }) {
                     {props.transcriber.progressItems.length > 0 && (
                         <div className='relative z-10 p-4 w-full'>
                             <label>
-                                Loading model files... (only run once)
+                                Laddar modellens filer... (körs bara första gången)
                             </label>
                             {props.transcriber.progressItems.map((data) => (
                                 <div key={data.file}>
@@ -269,11 +269,11 @@ function SettingsModal(props: {
 }) {
     const names = Object.values(LANGUAGES).map(titleCase);
 
-    const models = {
+    const models: { [key: string]: (string | number)[] } = {
         // Original checkpoints
-        'PierreMesure/kb-whisper-tiny-onnx': [120, 152],
-        'PierreMesure/kb-whisper-base-onnx': [183, 291],
-        'PierreMesure/kb-whisper-small-onnx': [183, 291],
+        'PierreMesure/kb-whisper-tiny-onnx': [120, 152, "tiny"],
+        'PierreMesure/kb-whisper-base-onnx': [183, 291, "base"],
+        'PierreMesure/kb-whisper-small-onnx': [407, 969, "small"],
     };
     return (
         <Modal
@@ -290,20 +290,9 @@ function SettingsModal(props: {
                         }}
                     >
                         {Object.keys(models)
-                            .filter(
-                                (key) =>
-                                    props.transcriber.quantized ||
-                                    // @ts-ignore
-                                    models[key].length == 2,
-                            )
-                            .filter(
-                                (key) => (
-                                    !props.transcriber.multilingual || !key.startsWith('distil-whisper/')
-                                )
-                            )
                             .map((key) => (
-                                <option key={key} value={key}>{`${key}${
-                                    (props.transcriber.multilingual || key.startsWith('distil-whisper/')) ? "" : ".en"
+                                <option key={key} value={key}>{`${models[key][2]}${
+                                    ""
                                 } (${
                                     // @ts-ignore
                                     models[key][

@@ -6,7 +6,7 @@ function App() {
     const transcriber = useTranscriber();
 
     return (
-        <div className='flex justify-center items-center min-h-screen'>
+        <div className='flex flex-col justify-center items-center min-h-screen'>
             <div className='container flex flex-col justify-center items-center'>
                 <div className='flex items-center mb-4'>
                     <img src='flag.svg' alt='flag' className='h-12 w-12 sm:h-20 sm:w-20' />
@@ -21,8 +21,10 @@ function App() {
                 <Transcript transcribedData={transcriber.output} />
             </div>
 
-            <div className='absolute bottom-4'>
-                Skapad av Pierre Mesure med färska Whisper-modeller från {" "}
+            <footer className='text-center mt-4'>
+                <b>OBS: Ljudet transkriberas helt lokalt.
+                <br/>För att göra det laddar webbsidan ner en AI-modell. Rensa webbläsarens cache om du vill ta bort den.</b>
+                <br/>Skapad av Pierre Mesure med färska Whisper-modeller från {" "}
                 <a
                     className='underline'
                     href='https://www.kb.se/samverkan-och-utveckling/nytt-fran-kb/nyheter-samverkan-och-utveckling/2025-02-20-valtranad-ai-modell-forvandlar-tal-till-text.html'
@@ -35,7 +37,7 @@ function App() {
                 >
                     öppen källkod
                 </a> 🤗
-            </div>
+            </footer>
         </div>
     );
 }
