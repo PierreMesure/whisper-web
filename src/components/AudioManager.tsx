@@ -243,7 +243,7 @@ export function AudioManager(props: { transcriber: Transcriber }) {
                 <div className='flex flex-row space-x-2 py-2 w-full px-2'>
                     <UrlTile
                         icon={<AnchorIcon />}
-                        text={"From URL"}
+                        text={"Från URL"}
                         onUrlUpdate={(e) => {
                             props.transcriber.onInputChange();
                             setAudioDownloadUrl(e);
@@ -252,7 +252,7 @@ export function AudioManager(props: { transcriber: Transcriber }) {
                     <VerticalBar />
                     <FileTile
                         icon={<FolderIcon />}
-                        text={"From file"}
+                        text={"Från fil"}
                         onFileUpdate={(decoded, blobUrl, mimeType) => {
                             props.transcriber.onInputChange();
                             setAudioData({
@@ -268,7 +268,7 @@ export function AudioManager(props: { transcriber: Transcriber }) {
                             <VerticalBar />
                             <RecordTile
                                 icon={<MicrophoneIcon />}
-                                text={"Record"}
+                                text={"Spela in"}
                                 setAudioData={(e) => {
                                     props.transcriber.onInputChange();
                                     setAudioFromRecording(e);
@@ -376,10 +376,10 @@ function SettingsModal(props: {
     return (
         <Modal
             show={props.show}
-            title={"Settings"}
+            title={"Inställningar"}
             content={
                 <>
-                    <label>Select the model to use.</label>
+                    <label>Välj en modell</label>
                     <select
                         className='mt-1 mb-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
                         defaultValue={props.transcriber.model}
@@ -423,7 +423,7 @@ function SettingsModal(props: {
                                 }}
                             ></input>
                             <label htmlFor={"multilingual"} className='ms-1'>
-                                Multilingual
+                                Flerspråkig
                             </label>
                         </div>
                         <div className='flex'>
@@ -438,7 +438,7 @@ function SettingsModal(props: {
                                 }}
                             ></input>
                             <label htmlFor={"quantize"} className='ms-1'>
-                                Quantized
+                                Kvantifierad
                             </label>
                         </div>
                     </div>
@@ -550,15 +550,15 @@ function UrlModal(props: {
     return (
         <Modal
             show={props.show}
-            title={"From URL"}
+            title={"Från URL"}
             content={
                 <>
-                    {"Enter the URL of the audio file you want to load."}
+                    {"Klistra in en webbadress till din ljudfil"}
                     <UrlInput onChange={onChange} value={url} />
                 </>
             }
             onClose={props.onClose}
-            submitText={"Load"}
+            submitText={"Klar"}
             onSubmit={onSubmit}
         />
     );
@@ -675,15 +675,15 @@ function RecordModal(props: {
     return (
         <Modal
             show={props.show}
-            title={"From Recording"}
+            title={"Spela in"}
             content={
                 <>
-                    {"Record audio using your microphone"}
+                    {"Spela in med din mikrofon"}
                     <AudioRecorder onRecordingComplete={onRecordingComplete} />
                 </>
             }
             onClose={onClose}
-            submitText={"Load"}
+            submitText={"Klar"}
             submitEnabled={audioBlob !== undefined}
             onSubmit={onSubmit}
         />

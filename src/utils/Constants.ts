@@ -26,7 +26,7 @@ export default {
     DEFAULT_AUDIO_URL: `https://raw.githubusercontent.com/PierreMesure/whisper-web/refs/heads/main/public/palme.wav`,
     DEFAULT_MODEL: "PierreMesure/kb-whisper-tiny-onnx",
     DEFAULT_SUBTASK: "transcribe",
-    DEFAULT_LANGUAGE: "english",
+    DEFAULT_LANGUAGE: "swedish",
     DEFAULT_QUANTIZED: isMobileOrTablet,
     DEFAULT_MULTILINGUAL: false,
 };
