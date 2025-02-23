@@ -9,6 +9,7 @@ export interface Props {
     submitEnabled?: boolean;
     title: string | JSX.Element;
     content: string | JSX.Element;
+    cacheSize: number;
 }
 
 export default function Modal({
@@ -19,7 +20,12 @@ export default function Modal({
     content,
     submitText,
     submitEnabled = true,
+    cacheSize = 0,
 }: Props) {
+    const onClear = () => {
+        onClose();
+        caches.delete('transformers-cache');
+    };
     return (
         <Transition appear show={show} as={Fragment}>
             <Dialog as='div' className='relative z-10' onClose={onClose}>
@@ -62,7 +68,7 @@ export default function Modal({
                                         <button
                                             type='button'
                                             disabled={!submitEnabled}
-                                            className={`inline-flex ml-4 justify-center rounded-md border border-transparent ${
+                                            className={`inline-flex ml-2 justify-center rounded-md border border-transparent ${
                                                 submitEnabled
                                                     ? "bg-indigo-600"
                                                     : "bg-grey-300"
@@ -78,11 +84,20 @@ export default function Modal({
                                     )}
                                     <button
                                         type='button'
-                                        className='inline-flex justify-center rounded-md border border-transparent bg-indigo-100 px-4 py-2 text-sm font-medium text-indigo-900 hover:bg-indigo-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 transition-all duration-300'
+                                        className='inline-flex ml-2 justify-center rounded-md border border-transparent bg-indigo-100 px-4 py-2 text-sm font-medium text-indigo-900 hover:bg-indigo-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 transition-all duration-300'
                                         onClick={onClose}
                                     >
-                                        Close
+                                        Stäng
                                     </button>
+                                {cacheSize != 0 && (
+                                    <button
+                                        type='button'
+                                        className='inline-flex justify-center rounded-md border border-transparent bg-red-100 px-4 py-2 text-sm font-medium text-red-900 hover:bg-red-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 transition-all duration-300'
+                                        onClick={onClear}
+                                    >
+                                        {cacheSize !== -1 ? `Rensa cache (${cacheSize}MB)` : "Rensa cache"}
+                                    </button>
+                                )}
                                 </div>
                             </Dialog.Panel>
                         </Transition.Child>

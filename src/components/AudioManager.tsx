@@ -275,6 +275,21 @@ function SettingsModal(props: {
         'PierreMesure/kb-whisper-base-onnx': [183, 291, "base"],
         'PierreMesure/kb-whisper-small-onnx': [407, 969, "small"],
     };
+
+    const [cacheSize, setCacheSize] = useState<number>(0);
+
+    async function fetchCacheSize() {
+        if ("storage" in navigator && "estimate" in navigator.storage) {
+            const estimate = await navigator.storage.estimate();
+            const usage = Number(estimate.usage);
+            setCacheSize(~~(usage / 1000000));
+        } else {
+            setCacheSize(-1);
+        }
+    }
+
+    fetchCacheSize();
+
     return (
         <Modal
             show={props.show}
@@ -322,6 +337,7 @@ function SettingsModal(props: {
             }
             onClose={props.onClose}
             onSubmit={() => {}}
+            cacheSize={cacheSize}
         />
     );
 }
@@ -401,6 +417,7 @@ function UrlModal(props: {
             onClose={props.onClose}
             submitText={"Klar"}
             onSubmit={onSubmit}
+            cacheSize={0}
         />
     );
 }
@@ -527,6 +544,7 @@ function RecordModal(props: {
             submitText={"Klar"}
             submitEnabled={audioBlob !== undefined}
             onSubmit={onSubmit}
+            cacheSize={0}
         />
     );
 }
