@@ -271,9 +271,9 @@ function SettingsModal(props: {
 
     const models: { [key: string]: (string | number)[] } = {
         // Original checkpoints
-        'PierreMesure/kb-whisper-tiny-onnx': [120, 152, "tiny"],
-        'PierreMesure/kb-whisper-base-onnx': [183, 291, "base"],
-        'PierreMesure/kb-whisper-small-onnx': [407, 969, "small"],
+        'KBLab/kb-whisper-tiny': [124, 152, "tiny"],
+        'KBLab/kb-whisper-base': [186, 291, "base"],
+        'KBLab/kb-whisper-small': [411, 969, "small"],
     };
 
     const [cacheSize, setCacheSize] = useState<number>(0);
