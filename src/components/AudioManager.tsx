@@ -269,12 +269,25 @@ function SettingsModal(props: {
 }) {
     const names = Object.values(LANGUAGES).map(titleCase);
 
-    const models: { [key: string]: (string | number)[] } = {
+    const models: { [key: string]: string } = {
         // Original checkpoints
-        'KBLab/kb-whisper-tiny': [124, 152, "tiny"],
-        'KBLab/kb-whisper-base': [186, 291, "base"],
-        'KBLab/kb-whisper-small': [411, 969, "small"],
+        'KBLab/kb-whisper-tiny': "tiny",
+        'KBLab/kb-whisper-base': "base",
+        'KBLab/kb-whisper-small': "small",
+        'KBLab/kb-whisper-medium': "medium",
+        'KBLab/kb-whisper-large': "large",
     };
+
+    const dtypes: string[] = [
+        'fp32',
+        'fp16',
+        'q8',
+        'int8',
+        'uint8',
+        'q4',
+        'bnb4',
+        'q4f16',
+    ];
 
     const [cacheSize, setCacheSize] = useState<number>(0);
 
@@ -306,33 +319,38 @@ function SettingsModal(props: {
                     >
                         {Object.keys(models)
                             .map((key) => (
-                                <option key={key} value={key}>{`${models[key][2]}${
-                                    ""
-                                } (${
-                                    // @ts-ignore
-                                    models[key][
-                                        props.transcriber.quantized ? 0 : 1
-                                    ]
-                                }MB)`}</option>
+                                <option key={key} value={key}>{models[key]}</option>
+                            ))}
+                    </select>
+                    <select
+                        className='mt-1 mb-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
+                        defaultValue={props.transcriber.dtype}
+                        onChange={(e) => {
+                            props.transcriber.setDType(e.target.value);
+                        }}
+                    >
+                        {dtypes.map((value, index) => (
+                                <option key={index} value={value}>{value}</option>
                             ))}
                     </select>
                     <div className='flex justify-between items-center mb-3 px-1'>
                         <div className='flex'>
                             <input
-                                id='quantize'
+                                id='gpu'
                                 type='checkbox'
-                                checked={props.transcriber.quantized}
+                                checked={props.transcriber.gpu}
                                 onChange={(e) => {
-                                    props.transcriber.setQuantized(
+                                    props.transcriber.setGPU(
                                         e.target.checked,
                                     );
                                 }}
                             ></input>
-                            <label htmlFor={"quantize"} className='ms-1'>
-                                Kvantifierad
+                            <label htmlFor={"gpu"} className='ms-1'>
+                                GPU
                             </label>
                         </div>
                     </div>
+
                 </>
             }
             onClose={props.onClose}

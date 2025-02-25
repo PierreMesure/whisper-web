@@ -27,6 +27,7 @@ export default {
     DEFAULT_MODEL: "PierreMesure/kb-whisper-tiny-onnx",
     DEFAULT_SUBTASK: "transcribe",
     DEFAULT_LANGUAGE: "swedish",
-    DEFAULT_QUANTIZED: isMobileOrTablet,
+    DEFAULT_DTYPE: isMobileOrTablet ? "q4" : "q8",
     DEFAULT_MULTILINGUAL: true,
+    DEFAULT_GPU: false
 };

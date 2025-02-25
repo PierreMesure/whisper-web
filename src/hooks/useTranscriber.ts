@@ -43,8 +43,10 @@ export interface Transcriber {
     setModel: (model: string) => void;
     multilingual: boolean;
     setMultilingual: (model: boolean) => void;
-    quantized: boolean;
-    setQuantized: (model: boolean) => void;
+    dtype: string;
+    setDType: (model: string) => void;
+    gpu: boolean;
+    setGPU: (model: boolean) => void;
     subtask: string;
     setSubtask: (subtask: string) => void;
     language?: string;
@@ -72,7 +74,7 @@ export function useTranscriber(): Transcriber {
                             return { ...item, progress: message.progress };
                         }
                         return item;
-                    }),
+                    })
                 );
                 break;
             case "update":
@@ -116,7 +118,7 @@ export function useTranscriber(): Transcriber {
             case "done":
                 // Model file loaded: remove the progress item from the list.
                 setProgressItems((prev) =>
-                    prev.filter((item) => item.file !== message.file),
+                    prev.filter((item) => item.file !== message.file)
                 );
                 break;
 
@@ -128,8 +130,11 @@ export function useTranscriber(): Transcriber {
 
     const [model, setModel] = useState<string>(Constants.DEFAULT_MODEL);
     const [subtask, setSubtask] = useState<string>(Constants.DEFAULT_SUBTASK);
-    const [quantized, setQuantized] = useState<boolean>(
-        Constants.DEFAULT_QUANTIZED,
+    const [dtype, setDType] = useState<string>(
+        Constants.DEFAULT_DTYPE,
+    );
+    const [gpu, setGPU] = useState<boolean>(
+        Constants.DEFAULT_GPU,
     );
     const [multilingual, setMultilingual] = useState<boolean>(
         Constants.DEFAULT_MULTILINGUAL,
@@ -168,14 +173,16 @@ export function useTranscriber(): Transcriber {
                     audio,
                     model,
                     multilingual,
-                    quantized,
+                    dtype,
+                    gpu,
                     subtask: multilingual ? subtask : null,
-                    language:
-                        multilingual && language !== "auto" ? language : null,
+                    language: multilingual && language !== "auto"
+                        ? language
+                        : null,
                 });
             }
         },
-        [webWorker, model, multilingual, quantized, subtask, language],
+        [webWorker, model, multilingual, dtype, gpu, subtask, language],
     );
 
     const transcriber = useMemo(() => {
@@ -190,8 +197,10 @@ export function useTranscriber(): Transcriber {
             setModel,
             multilingual,
             setMultilingual,
-            quantized,
-            setQuantized,
+            dtype,
+            setDType,
+            gpu,
+            setGPU,
             subtask,
             setSubtask,
             language,
@@ -205,7 +214,8 @@ export function useTranscriber(): Transcriber {
         transcript,
         model,
         multilingual,
-        quantized,
+        dtype,
+        gpu,
         subtask,
         language,
     ]);

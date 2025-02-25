@@ -9,19 +9,22 @@ env.allowLocalModels = false;
 class PipelineFactory {
     static task = null;
     static model = null;
-    static quantized = null;
+    static dtype = null;
+    static gpu = null;
     static instance = null;
 
-    constructor(tokenizer, model, quantized) {
+    constructor(tokenizer, model, dtype, gpu) {
         this.tokenizer = tokenizer;
         this.model = model;
-        this.quantized = quantized;
+        this.dtype = dtype;
+        this.gpu = gpu;
     }
 
     static async getInstance(progress_callback = null) {
         if (this.instance === null) {
             this.instance = pipeline(this.task, this.model, {
-                quantized: this.quantized,
+                dtype: this.dtype,
+                device: this.gpu ? "webgpu" : "wasm",
                 progress_callback,
 
                 // For medium models, we need to load the `no_attentions` revision to avoid running out of memory
@@ -42,7 +45,8 @@ self.addEventListener("message", async (event) => {
         message.audio,
         message.model,
         message.multilingual,
-        message.quantized,
+        message.dtype,
+        message.gpu,
         message.subtask,
         message.language,
     );
@@ -59,14 +63,16 @@ self.addEventListener("message", async (event) => {
 class AutomaticSpeechRecognitionPipelineFactory extends PipelineFactory {
     static task = "automatic-speech-recognition";
     static model = null;
-    static quantized = null;
+    static dtype = null;
+    static gpu = null;
 }
 
 const transcribe = async (
     audio,
     model,
     multilingual,
-    quantized,
+    dtype,
+    gpu,
     subtask,
     language,
 ) => {
@@ -79,10 +85,11 @@ const transcribe = async (
     }
 
     const p = AutomaticSpeechRecognitionPipelineFactory;
-    if (p.model !== modelName || p.quantized !== quantized) {
+    if (p.model !== modelName || p.dtype !== dtype || p.gpu !== gpu) {
         // Invalidate model if different
         p.model = modelName;
-        p.quantized = quantized;
+        p.dtype = dtype;
+        p.gpu = gpu;
 
         if (p.instance !== null) {
             (await p.getInstance()).dispose();
