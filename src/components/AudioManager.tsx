@@ -385,6 +385,10 @@ function SettingsModal(props: {
         size: value,
         id: `${key}${props.transcriber.multilingual || key.includes("/distil-") ? "" : ".en"}`,
     }));
+
+    // @ts-ignore
+    const IS_WEBGPU_AVAILABLE = !!navigator.gpu;
+
     return (
         <Modal
             show={props.show}
@@ -432,6 +436,7 @@ function SettingsModal(props: {
                                 id='gpu'
                                 type='checkbox'
                                 checked={props.transcriber.gpu}
+                                disabled={!IS_WEBGPU_AVAILABLE}
                                 onChange={(e) => {
                                     props.transcriber.setGPU(
                                         e.target.checked,
@@ -439,7 +444,7 @@ function SettingsModal(props: {
                                 }}
                             ></input>
                             <label htmlFor={"gpu"} className='ms-1'>
-                                GPU
+                                {IS_WEBGPU_AVAILABLE ? "GPU" : "GPU (unsupported browser)"}
                             </label>
                         </div>
                     </div>
