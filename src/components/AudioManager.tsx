@@ -406,7 +406,7 @@ function SettingsModal(props: {
                             >{`${id} (${size}MB)`}</option>
                         ))}
                     </select>
-                    <div className='flex justify-end items-center mb-3 px-1'>
+                    <div className='flex justify-between items-center mb-3 px-1'>
                         <div className='flex'>
                             <input
                                 id='multilingual'
@@ -425,6 +425,21 @@ function SettingsModal(props: {
                             ></input>
                             <label htmlFor={"multilingual"} className='ms-1'>
                                 Multilingual
+                            </label>
+                        </div>
+                        <div className='flex'>
+                            <input
+                                id='gpu'
+                                type='checkbox'
+                                checked={props.transcriber.gpu}
+                                onChange={(e) => {
+                                    props.transcriber.setGPU(
+                                        e.target.checked,
+                                    );
+                                }}
+                            ></input>
+                            <label htmlFor={"gpu"} className='ms-1'>
+                                GPU
                             </label>
                         </div>
                     </div>
