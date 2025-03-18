@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build",
     "clean": "rm -rf node_modules/ dist/",
     "lint": "eslint .",
-    "format": "prettier --write src/**/*.{js,jsx,ts,tsx,css,md,json} --config ./.prettierrc",
+    "format": "prettier --write src/**/*.{js,ts,tsx,css} --config ./.prettierrc",
     "preview": "vite preview"
   },
   "dependencies": {

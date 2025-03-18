@@ -1,10 +1,10 @@
-import React, { useEffect, useState, JSX } from "react";
+import React, { useEffect, useState, useCallback, JSX } from "react";
 import axios from "axios";
 import Modal from "./modal/Modal";
 import { UrlInput } from "./modal/UrlInput";
 import AudioPlayer from "./AudioPlayer";
 import { TranscribeButton } from "./TranscribeButton";
-import Constants from "../utils/Constants";
+import Constants, { AudioSource, LANGUAGES, MODELS } from "../utils/Constants";
 import { Transcriber } from "../hooks/useTranscriber";
 import Progress from "./Progress";
 import AudioRecorder from "./AudioRecorder";
@@ -16,128 +16,6 @@ function titleCase(str: string) {
             return word.charAt(0).toUpperCase() + word.slice(1);
         })
         .join("");
-}
-
-// List of supported languages:
-// https://help.openai.com/en/articles/7031512-whisper-api-faq
-// https://github.com/openai/whisper/blob/248b6cb124225dd263bb9bd32d060b6517e067f8/whisper/tokenizer.py#L79
-const LANGUAGES = {
-    en: "english",
-    zh: "chinese",
-    de: "german",
-    es: "spanish/castilian",
-    ru: "russian",
-    ko: "korean",
-    fr: "french",
-    ja: "japanese",
-    pt: "portuguese",
-    tr: "turkish",
-    pl: "polish",
-    ca: "catalan/valencian",
-    nl: "dutch/flemish",
-    ar: "arabic",
-    sv: "swedish",
-    it: "italian",
-    id: "indonesian",
-    hi: "hindi",
-    fi: "finnish",
-    vi: "vietnamese",
-    he: "hebrew",
-    uk: "ukrainian",
-    el: "greek",
-    ms: "malay",
-    cs: "czech",
-    ro: "romanian/moldavian/moldovan",
-    da: "danish",
-    hu: "hungarian",
-    ta: "tamil",
-    no: "norwegian",
-    th: "thai",
-    ur: "urdu",
-    hr: "croatian",
-    bg: "bulgarian",
-    lt: "lithuanian",
-    la: "latin",
-    mi: "maori",
-    ml: "malayalam",
-    cy: "welsh",
-    sk: "slovak",
-    te: "telugu",
-    fa: "persian",
-    lv: "latvian",
-    bn: "bengali",
-    sr: "serbian",
-    az: "azerbaijani",
-    sl: "slovenian",
-    kn: "kannada",
-    et: "estonian",
-    mk: "macedonian",
-    br: "breton",
-    eu: "basque",
-    is: "icelandic",
-    hy: "armenian",
-    ne: "nepali",
-    mn: "mongolian",
-    bs: "bosnian",
-    kk: "kazakh",
-    sq: "albanian",
-    sw: "swahili",
-    gl: "galician",
-    mr: "marathi",
-    pa: "punjabi/panjabi",
-    si: "sinhala/sinhalese",
-    km: "khmer",
-    sn: "shona",
-    yo: "yoruba",
-    so: "somali",
-    af: "afrikaans",
-    oc: "occitan",
-    ka: "georgian",
-    be: "belarusian",
-    tg: "tajik",
-    sd: "sindhi",
-    gu: "gujarati",
-    am: "amharic",
-    yi: "yiddish",
-    lo: "lao",
-    uz: "uzbek",
-    fo: "faroese",
-    ht: "haitian creole/haitian",
-    ps: "pashto/pushto",
-    tk: "turkmen",
-    nn: "nynorsk",
-    mt: "maltese",
-    sa: "sanskrit",
-    lb: "luxembourgish/letzeburgesch",
-    my: "myanmar/burmese",
-    bo: "tibetan",
-    tl: "tagalog",
-    mg: "malagasy",
-    as: "assamese",
-    tt: "tatar",
-    haw: "hawaiian",
-    ln: "lingala",
-    ha: "hausa",
-    ba: "bashkir",
-    jw: "javanese",
-    su: "sundanese",
-};
-
-const MODELS = Object.entries({
-    // Original checkpoints
-    "onnx-community/whisper-tiny": 120, // 33 + 87
-    "onnx-community/whisper-base": 206, // 83 + 123
-    "onnx-community/whisper-small": 586, // 353 + 233
-    "onnx-community/whisper-large-v3-turbo": 1604, // 1270 + 334
-
-    // Distil Whisper (English-only)
-    "onnx-community/distil-small.en": 538, // 353 + 185
-});
-
-export enum AudioSource {
-    URL = "URL",
-    FILE = "FILE",
-    RECORDING = "RECORDING",
 }
 
 export function AudioManager(props: { transcriber: Transcriber }) {
@@ -204,35 +82,39 @@ export function AudioManager(props: { transcriber: Transcriber }) {
         fileReader.readAsArrayBuffer(data);
     };
 
-    const downloadAudioFromUrl = async (
-        requestAbortController: AbortController,
-    ) => {
-        if (audioDownloadUrl) {
-            try {
-                setAudioData(undefined);
-                setProgress(0);
-                const { data, headers } = (await axios.get(audioDownloadUrl, {
-                    signal: requestAbortController.signal,
-                    responseType: "arraybuffer",
-                    onDownloadProgress(progressEvent) {
-                        setProgress(progressEvent.progress || 0);
-                    },
-                })) as {
-                    data: ArrayBuffer;
-                    headers: { "content-type": string };
-                };
+    const downloadAudioFromUrl = useCallback(
+        async (requestAbortController: AbortController) => {
+            if (audioDownloadUrl) {
+                try {
+                    setAudioData(undefined);
+                    setProgress(0);
+                    const { data, headers } = (await axios.get(
+                        audioDownloadUrl,
+                        {
+                            signal: requestAbortController.signal,
+                            responseType: "arraybuffer",
+                            onDownloadProgress(progressEvent) {
+                                setProgress(progressEvent.progress || 0);
+                            },
+                        },
+                    )) as {
+                        data: ArrayBuffer;
+                        headers: { "content-type": string };
+                    };
 
-                let mimeType = headers["content-type"];
-                if (!mimeType || mimeType === "audio/wave") {
-                    mimeType = "audio/wav";
+                    let mimeType = headers["content-type"];
+                    if (!mimeType || mimeType === "audio/wave") {
+                        mimeType = "audio/wav";
+                    }
+                    setAudioFromDownload(data, mimeType);
+                } catch (error) {
+                    console.log("Request failed or aborted", error);
+                    setProgress(undefined);
                 }
-                setAudioFromDownload(data, mimeType);
-            } catch (error) {
-                console.log("Request failed or aborted", error);
-                setProgress(undefined);
             }
-        }
-    };
+        },
+        [audioDownloadUrl],
+    );
 
     // When URL changes, download audio
     useEffect(() => {
@@ -243,7 +125,7 @@ export function AudioManager(props: { transcriber: Transcriber }) {
                 requestAbortController.abort();
             };
         }
-    }, [audioDownloadUrl]);
+    }, [audioDownloadUrl, downloadAudioFromUrl]);
 
     return (
         <>
@@ -378,15 +260,14 @@ function SettingsModal(props: {
     const names = Object.values(LANGUAGES).map(titleCase);
 
     const models = MODELS.filter(
-        ([key, _value]) =>
-            !props.transcriber.multilingual || !key.includes("/distil-"),
+        ([key]) => !props.transcriber.multilingual || !key.includes("/distil-"),
     ).map(([key, value]) => ({
         key,
         size: value,
         id: `${key}${props.transcriber.multilingual || key.includes("/distil-") ? "" : ".en"}`,
     }));
 
-    // @ts-ignore
+    // @ts-expect-error navigator.gpu not yet supported
     const IS_WEBGPU_AVAILABLE = !!navigator.gpu;
 
     return (
@@ -647,7 +528,7 @@ function RecordTile(props: {
             <RecordModal
                 show={showModal}
                 onSubmit={onSubmit}
-                onProgress={(_data) => {}}
+                onProgress={() => {}}
                 onClose={onClose}
             />
         </>

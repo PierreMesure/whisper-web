@@ -70,7 +70,7 @@ export function useTranscriber(): Transcriber {
                 );
                 break;
             case "update":
-            case "complete":
+            case "complete": {
                 const busy = message.status === "update";
                 const updateMessage = message as TranscriberUpdateData;
                 setTranscript({
@@ -81,7 +81,7 @@ export function useTranscriber(): Transcriber {
                 });
                 setIsBusy(busy);
                 break;
-
+            }
             case "initiate":
                 // Model file start load: add a new progress item to the list.
                 setIsModelLoading(true);
@@ -179,6 +179,7 @@ export function useTranscriber(): Transcriber {
             setLanguage,
         };
     }, [
+        onInputChange,
         isBusy,
         isModelLoading,
         progressItems,
@@ -186,6 +187,7 @@ export function useTranscriber(): Transcriber {
         transcript,
         model,
         multilingual,
+        gpu,
         subtask,
         language,
     ]);

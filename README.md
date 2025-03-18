@@ -21,6 +21,7 @@ https://github.com/xenova/whisper-web/assets/26504141/5d6ed3d9-5f99-4d89-8e38-9d
     ```bash
     npm run dev
     ```
+
     > Firefox users need to change the `dom.workers.modules.enabled` setting in `about:config` to `true` to enable Web Workers.
     > Check out [this issue](https://github.com/xenova/whisper-web/issues/8) for more details.
 
