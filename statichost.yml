@@ -1,5 +1,7 @@
 domains:
   # Primary domain
-  - whisper.mesu.re
+  - kb-whisper.mesu.re
   # Domains that redirect to the primary
+  - www.kb-whisper.mesu.re
+  - whisper.mesu.re
   - www.whisper.mesu.re
