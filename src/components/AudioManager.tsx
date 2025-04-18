@@ -14,6 +14,7 @@ import { Transcriber } from "../hooks/useTranscriber";
 import Progress from "./Progress";
 import AudioRecorder from "./AudioRecorder";
 import { t } from "i18next";
+import { useTranslation } from "react-i18next";
 
 function titleCase(str: string) {
     str = str.toLowerCase();
@@ -482,7 +483,12 @@ function UrlModal(props: {
     onSubmit: (url: string) => void;
     onClose: () => void;
 }) {
-    const [url, setUrl] = useState(Constants.DEFAULT_AUDIO_URL);
+    const { i18n } = useTranslation();
+    const [url, setUrl] = useState(Constants.getDefaultAudioUrl(i18n.language));
+
+    useEffect(() => {
+        setUrl(Constants.getDefaultAudioUrl(i18n.language));
+    }, [i18n.language]);
 
     const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setUrl(event.target.value);

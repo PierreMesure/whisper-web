@@ -160,17 +160,40 @@ export enum AudioSource {
 }
 
 const isMobileOrTablet = mobileTabletCheck();
+
+function getDefaultAudioUrl(language: string): string {
+    switch (language) {
+        case "sv":
+            return "https://raw.githubusercontent.com/PierreMesure/whisper-web/refs/heads/main/public/palme.wav";
+        default:
+            return `https://huggingface.co/datasets/Xenova/transformers.js-docs/resolve/main/${
+                isMobileOrTablet ? "jfk" : "ted_60_16k"
+            }.wav`;
+    }
+}
+
+function getDefaultModel(language: string): string {
+    switch (language) {
+        case "sv":
+            return `KBLab/kb-whisper-${isMobileOrTablet ? "tiny" : "base"}`;
+        default:
+            return `onnx-community/whisper-${
+                isMobileOrTablet ? "tiny" : "base"
+            }`;
+    }
+}
+
+function getDefaultLanguage(language: string): string {
+    return (language as keyof typeof LANGUAGES) || "en";
+}
+
 export default {
     SAMPLING_RATE: 16000,
-    DEFAULT_AUDIO_URL: `https://huggingface.co/datasets/Xenova/transformers.js-docs/resolve/main/${
-        isMobileOrTablet ? "jfk" : "ted_60_16k"
-    }.wav`,
-    DEFAULT_MODEL: isMobileOrTablet
-        ? "onnx-community/whisper-tiny"
-        : "onnx-community/whisper-base",
+    getDefaultAudioUrl,
+    getDefaultModel,
     DEFAULT_SUBTASK: "transcribe",
-    DEFAULT_LANGUAGE: "english",
+    getDefaultLanguage,
     DEFAULT_QUANTIZED: isMobileOrTablet,
-    DEFAULT_DTYPE: "q4",
+    DEFAULT_DTYPE: "q8",
     DEFAULT_GPU: false,
 };

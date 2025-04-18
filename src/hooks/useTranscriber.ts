@@ -1,5 +1,6 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useWorker } from "./useWorker";
+import { useTranslation } from "react-i18next";
 import Constants from "../utils/Constants";
 
 interface ProgressItem {
@@ -109,13 +110,23 @@ export function useTranscriber(): Transcriber {
         }
     });
 
-    const [model, setModel] = useState<string>(Constants.DEFAULT_MODEL);
+    const { i18n } = useTranslation();
+
+    const [model, setModel] = useState<string>(
+        Constants.getDefaultModel(i18n.language),
+    );
+
     const [subtask, setSubtask] = useState<string>(Constants.DEFAULT_SUBTASK);
     const [dtype, setDtype] = useState<string>(Constants.DEFAULT_DTYPE);
     const [gpu, setGPU] = useState<boolean>(Constants.DEFAULT_GPU);
     const [language, setLanguage] = useState<string>(
-        Constants.DEFAULT_LANGUAGE,
+        Constants.getDefaultLanguage(i18n.language),
     );
+
+    useEffect(() => {
+        setModel(Constants.getDefaultModel(i18n.language));
+        setLanguage(Constants.getDefaultLanguage(i18n.language));
+    }, [i18n.language]);
 
     const onInputChange = useCallback(() => {
         setTranscript(undefined);
