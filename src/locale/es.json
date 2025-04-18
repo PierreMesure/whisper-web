@@ -1,0 +1,50 @@
+{
+    "translation": {
+        "app": {
+            "title": "Whisper Web",
+            "subtitle": "¡Transcribe el habla directamente en tu navegador!",
+            "footer": "La transcripción se realiza localmente en tu navegador. Tus datos se quedan privados.",
+            "footer_credits": "Creado por <authorLink>Pierre Mesure</authorLink> basado en una demostración de <demoLink>Xenova</demoLink> ♥️"
+        },
+        "modal": {
+            "close": "Cerrar"
+        },
+        "manager": {
+            "loading": "Cargando archivos de modelo... (solo se ejecuta una vez)",
+            "select_model": "Selecciona el modelo a usar.",
+            "select_language": "Selecciona el idioma de origen.",
+            "select_task": "Selecciona la tarea a realizar.",
+            "transcribe": "Transcribir",
+            "translate": "Traducir (al inglés)",
+            "from_url": "Desde URL",
+            "from_url_description": "Ingresa la URL del archivo de audio que deseas cargar.",
+            "from_file": "Desde archivo",
+            "record": "Grabar",
+            "record_description": "Graba audio usando tu micrófono",
+            "submit": "Cargar",
+            "settings": "Configuraciones",
+            "gpu": "GPU",
+            "gpu_disabled": "GPU (navegador no compatible)",
+            "clear_cache": "Borrar caché"
+        },
+        "recorder": {
+            "start_recording": "Iniciar grabación",
+            "stop_recording": "Detener grabación ({{duration}})"
+        },
+        "transcribe_button": {
+            "loading_model": "Cargando modelo...",
+            "transcribing": "Transcribiendo...",
+            "transcribe": "Transcribir Audio"
+        },
+        "transcript": {
+            "export": "Exportar",
+            "tokens_per_second": "tokens/segundo"
+        },
+        "language_selector": {
+            "title": "Idioma",
+            "sv": "Sueco",
+            "en": "Inglés",
+            "es": "Español"
+        }
+    }
+}

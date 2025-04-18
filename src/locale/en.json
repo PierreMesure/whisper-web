@@ -1,0 +1,50 @@
+{
+    "translation": {
+        "app": {
+            "title": "Whisper Web",
+            "subtitle": "Transcribe speech directly in your browser!",
+            "footer": "The transcription is performed locally on your device. Your data remains private.",
+            "footer_credits": "Created by <authorLink>Pierre Mesure</authorLink> based on a demo by <demoLink>Xenova</demoLink> ♥️"
+        },
+        "modal": {
+            "close": "Close"
+        },
+        "manager": {
+            "loading": "Loading model files... (only run once)",
+            "select_model": "Select the model to use.",
+            "select_language": "Select the source language.",
+            "select_task": "Select the task to perform.",
+            "transcribe": "Transcribe",
+            "translate": "Translate (to English)",
+            "from_url": "From URL",
+            "from_url_description": "Enter the URL of the audio file you want to load.",
+            "from_file": "From file",
+            "record": "Record",
+            "record_description": "Record audio using your microphone",
+            "submit": "Load",
+            "settings": "Settings",
+            "gpu": "GPU",
+            "gpu_disabled": "GPU (unsupported browser)",
+            "clear_cache": "Clear cache"
+        },
+        "recorder": {
+            "start_recording": "Start recording",
+            "stop_recording": "Stop recording ({{duration}})"
+        },
+        "transcribe_button": {
+            "loading_model": "Loading model...",
+            "transcribing": "Transcribing...",
+            "transcribe": "Transcribe Audio"
+        },
+        "transcript": {
+            "export": "Export",
+            "tokens_per_second": "tokens/second"
+        },
+        "language_selector": {
+            "title": "Language",
+            "sv": "Swedish",
+            "en": "English",
+            "es": "Spanish"
+        }
+    }
+}

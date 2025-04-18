@@ -12,22 +12,16 @@ interface ProgressItem {
 }
 
 interface TranscriberUpdateData {
-    data: [
-        string,
-        { chunks: { text: string; timestamp: [number, number | null] }[] },
-    ];
-    text: string;
-}
-
-interface TranscriberCompleteData {
     data: {
         text: string;
         chunks: { text: string; timestamp: [number, number | null] }[];
+        tps: number;
     };
 }
 
 export interface TranscriberData {
     isBusy: boolean;
+    tps?: number;
     text: string;
     chunks: { text: string; timestamp: [number, number | null] }[];
 }
@@ -41,10 +35,8 @@ export interface Transcriber {
     output?: TranscriberData;
     model: string;
     setModel: (model: string) => void;
-    multilingual: boolean;
-    setMultilingual: (model: boolean) => void;
     dtype: string;
-    setDType: (model: string) => void;
+    setDtype: (model: string) => void;
     gpu: boolean;
     setGPU: (model: boolean) => void;
     subtask: string;
@@ -74,33 +66,22 @@ export function useTranscriber(): Transcriber {
                             return { ...item, progress: message.progress };
                         }
                         return item;
-                    })
+                    }),
                 );
                 break;
             case "update":
-                // Received partial update
-                // console.log("update", message);
-                // eslint-disable-next-line no-case-declarations
+            case "complete": {
+                const busy = message.status === "update";
                 const updateMessage = message as TranscriberUpdateData;
                 setTranscript({
-                    isBusy: true,
-                    text: updateMessage.data[0],
-                    chunks: updateMessage.data[1].chunks,
+                    isBusy: busy,
+                    text: updateMessage.data.text,
+                    tps: updateMessage.data.tps,
+                    chunks: updateMessage.data.chunks,
                 });
+                setIsBusy(busy);
                 break;
-            case "complete":
-                // Received complete transcript
-                // console.log("complete", message);
-                // eslint-disable-next-line no-case-declarations
-                const completeMessage = message as TranscriberCompleteData;
-                setTranscript({
-                    isBusy: false,
-                    text: completeMessage.data.text,
-                    chunks: completeMessage.data.chunks,
-                });
-                setIsBusy(false);
-                break;
-
+            }
             case "initiate":
                 // Model file start load: add a new progress item to the list.
                 setIsModelLoading(true);
@@ -112,13 +93,13 @@ export function useTranscriber(): Transcriber {
             case "error":
                 setIsBusy(false);
                 alert(
-                    `${message.data.message} This is most likely because you are using Safari on an M1/M2 Mac. Please try again from Chrome, Firefox, or Edge.\n\nIf this is not the case, please file a bug report.`,
+                    `An error occurred: "${message.data.message}". Please file a bug report.`,
                 );
                 break;
             case "done":
                 // Model file loaded: remove the progress item from the list.
                 setProgressItems((prev) =>
-                    prev.filter((item) => item.file !== message.file)
+                    prev.filter((item) => item.file !== message.file),
                 );
                 break;
 
@@ -130,15 +111,8 @@ export function useTranscriber(): Transcriber {
 
     const [model, setModel] = useState<string>(Constants.DEFAULT_MODEL);
     const [subtask, setSubtask] = useState<string>(Constants.DEFAULT_SUBTASK);
-    const [dtype, setDType] = useState<string>(
-        Constants.DEFAULT_DTYPE,
-    );
-    const [gpu, setGPU] = useState<boolean>(
-        Constants.DEFAULT_GPU,
-    );
-    const [multilingual, setMultilingual] = useState<boolean>(
-        Constants.DEFAULT_MULTILINGUAL,
-    );
+    const [dtype, setDtype] = useState<string>(Constants.DEFAULT_DTYPE);
+    const [gpu, setGPU] = useState<boolean>(Constants.DEFAULT_GPU);
     const [language, setLanguage] = useState<string>(
         Constants.DEFAULT_LANGUAGE,
     );
@@ -157,12 +131,12 @@ export function useTranscriber(): Transcriber {
                 if (audioData.numberOfChannels === 2) {
                     const SCALING_FACTOR = Math.sqrt(2);
 
-                    let left = audioData.getChannelData(0);
-                    let right = audioData.getChannelData(1);
+                    const left = audioData.getChannelData(0);
+                    const right = audioData.getChannelData(1);
 
                     audio = new Float32Array(left.length);
                     for (let i = 0; i < audioData.length; ++i) {
-                        audio[i] = SCALING_FACTOR * (left[i] + right[i]) / 2;
+                        audio[i] = (SCALING_FACTOR * (left[i] + right[i])) / 2;
                     }
                 } else {
                     // If the audio is not stereo, we can just use the first channel:
@@ -172,17 +146,17 @@ export function useTranscriber(): Transcriber {
                 webWorker.postMessage({
                     audio,
                     model,
-                    multilingual,
                     dtype,
                     gpu,
-                    subtask: multilingual ? subtask : null,
-                    language: multilingual && language !== "auto"
-                        ? language
-                        : null,
+                    subtask: !model.endsWith(".en") ? subtask : null,
+                    language:
+                        !model.endsWith(".en") && language !== "auto"
+                            ? language
+                            : null,
                 });
             }
         },
-        [webWorker, model, multilingual, dtype, gpu, subtask, language],
+        [webWorker, model, dtype, gpu, subtask, language],
     );
 
     const transcriber = useMemo(() => {
@@ -195,10 +169,8 @@ export function useTranscriber(): Transcriber {
             output: transcript,
             model,
             setModel,
-            multilingual,
-            setMultilingual,
             dtype,
-            setDType,
+            setDtype,
             gpu,
             setGPU,
             subtask,
@@ -207,13 +179,13 @@ export function useTranscriber(): Transcriber {
             setLanguage,
         };
     }, [
+        onInputChange,
         isBusy,
         isModelLoading,
         progressItems,
         postRequest,
         transcript,
         model,
-        multilingual,
         dtype,
         gpu,
         subtask,

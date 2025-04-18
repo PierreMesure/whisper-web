@@ -1,0 +1,50 @@
+{
+    "translation": {
+        "app": {
+            "title": "Whisper Web",
+            "subtitle": "Transkribera tal direkt i din webbläsare!",
+            "footer": "Transkriberingen utförs lokalt på din enhet. Inga uppgifter skickas någonstans.",
+            "footer_credits": "Skapad av <authorLink>Pierre Mesure</authorLink> baserat på en demo av <demoLink>Xenova</demoLink> ♥️"
+        },
+        "modal": {
+            "close": "Stäng"
+        },
+        "manager": {
+            "loading": "Laddar modellfiler... (körs endast en gång)",
+            "select_model": "Välj den modell som ska användas.",
+            "select_language": "Välj källspråk.",
+            "select_task": "Välj uppgift.",
+            "transcribe": "Transkribera",
+            "translate": "Översätt (till engelska)",
+            "from_url": "Från URL",
+            "from_url_description": "Ange URL:en till ljudfilen du vill ladda.",
+            "from_file": "Från fil",
+            "record": "Spela in",
+            "record_description": "Spela in ljud med din mikrofon",
+            "submit": "Ladda",
+            "settings": "Inställningar",
+            "gpu": "GPU",
+            "gpu_disabled": "GPU (ej kompatibel med webbläsaren)",
+            "clear_cache": "Rensa cache"
+        },
+        "recorder": {
+            "start_recording": "Starta inspelning",
+            "stop_recording": "Stoppa inspelning ({{duration}})"
+        },
+        "transcribe_button": {
+            "loading_model": "Laddar modell...",
+            "transcribing": "Transkriberar...",
+            "transcribe": "Transkribera ljud"
+        },
+        "transcript": {
+            "export": "Exportera",
+            "tokens_per_second": "tokens/sekund"
+        },
+        "language_selector": {
+            "title": "Språk",
+            "sv": "svenska",
+            "en": "engelska",
+            "es": "spanska"
+        }
+    }
+}

@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 
 import { formatAudioTimestamp } from "../utils/AudioUtils";
 import { webmFixDuration } from "../utils/BlobFix";
+import { t } from "i18next";
 
 function getMimeType() {
     const types = [
@@ -20,6 +21,7 @@ function getMimeType() {
 }
 
 export default function AudioRecorder(props: {
+    onRecordingProgress: (blob: Blob) => void;
     onRecordingComplete: (blob: Blob) => void;
 }) {
     const [recording, setRecording] = useState(false);
@@ -36,14 +38,14 @@ export default function AudioRecorder(props: {
         // Reset recording (if any)
         setRecordedBlob(null);
 
-        let startTime = Date.now();
-
         try {
             if (!streamRef.current) {
                 streamRef.current = await navigator.mediaDevices.getUserMedia({
                     audio: true,
                 });
             }
+
+            const startTime = Date.now();
 
             const mimeType = getMimeType();
             const mediaRecorder = new MediaRecorder(streamRef.current, {
@@ -53,23 +55,26 @@ export default function AudioRecorder(props: {
             mediaRecorderRef.current = mediaRecorder;
 
             mediaRecorder.addEventListener("dataavailable", async (event) => {
-                if (event.data.size > 0) {
-                    chunksRef.current.push(event.data);
+                if (event.data.size === 0) {
+                    // Ignore empty data
+                    return;
                 }
+                chunksRef.current.push(event.data);
+                const duration = Date.now() - startTime;
+
+                // Received a stop event
+                let blob = new Blob(chunksRef.current, { type: mimeType });
+
                 if (mediaRecorder.state === "inactive") {
-                    const duration = Date.now() - startTime;
-
-                    // Received a stop event
-                    let blob = new Blob(chunksRef.current, { type: mimeType });
-
                     if (mimeType === "audio/webm") {
                         blob = await webmFixDuration(blob, duration, blob.type);
                     }
-
                     setRecordedBlob(blob);
                     props.onRecordingComplete(blob);
 
                     chunksRef.current = [];
+                } else if (mediaRecorder.state === "recording") {
+                    props.onRecordingProgress(blob);
                 }
             });
             mediaRecorder.start();
@@ -80,10 +85,7 @@ export default function AudioRecorder(props: {
     };
 
     const stopRecording = () => {
-        if (
-            mediaRecorderRef.current &&
-            mediaRecorderRef.current.state === "recording"
-        ) {
+        if (mediaRecorderRef.current?.state === "recording") {
             mediaRecorderRef.current.stop(); // set state to inactive
             setDuration(0);
             setRecording(false);
@@ -91,8 +93,6 @@ export default function AudioRecorder(props: {
     };
 
     useEffect(() => {
-        let stream: MediaStream | null = null;
-
         if (recording) {
             const timer = setInterval(() => {
                 setDuration((prevDuration) => prevDuration + 1);
@@ -102,12 +102,6 @@ export default function AudioRecorder(props: {
                 clearInterval(timer);
             };
         }
-
-        return () => {
-            if (stream) {
-                stream.getTracks().forEach((track) => track.stop());
-            }
-        };
     }, [recording]);
 
     const handleToggleRecording = () => {
@@ -130,8 +124,10 @@ export default function AudioRecorder(props: {
                 onClick={handleToggleRecording}
             >
                 {recording
-                    ? `Avsluta inspelningen (${formatAudioTimestamp(duration)})`
-                    : "Starta inspelningen"}
+                    ? t("recorder.stop_recording", {
+                          duration: formatAudioTimestamp(duration),
+                      })
+                    : t("recorder.start_recording")}
             </button>
 
             {recordedBlob && (
