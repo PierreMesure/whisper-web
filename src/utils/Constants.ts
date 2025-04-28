@@ -142,9 +142,9 @@ export const MODELS: { [key: string]: [string, string] } = {
     "KBLab/kb-whisper-small": ["kb-whisper-small", "sv"],
     "KBLab/kb-whisper-medium": ["kb-whisper-medium", "sv"],
     "KBLab/kb-whisper-large": ["kb-whisper-large", "sv"],
-    "PierreMesure/nb-whisper-tiny": ["nb-whisper-tiny", "no"],
-    "PierreMesure/nb-whisper-base": ["nb-whisper-base", "no"],
-    "PierreMesure/nb-whisper-small": ["nb-whisper-small", "no"],
+    "PierreMesure/nb-whisper-tiny-onnx": ["nb-whisper-tiny", "no"],
+    "PierreMesure/nb-whisper-base-onnx": ["nb-whisper-base", "no"],
+    "PierreMesure/nb-whisper-small-onnx": ["nb-whisper-small", "no"],
 };
 
 export const DTYPES: string[] = [
@@ -169,7 +169,11 @@ const isMobileOrTablet = mobileTabletCheck();
 function getDefaultAudioUrl(language: string): string {
     switch (language) {
         case "sv":
-            return "https://kb-whisper.mesu.re/palme.wav";
+            return "https://raw.githubusercontent.com/PierreMesure/whisper-web/refs/heads/main/public/palme.wav";
+        case "no":
+            return "https://raw.githubusercontent.com/NbAiLab/nb-whisper/main/audio/king.mp3";
+        case "es":
+            return "https://raw.githubusercontent.com/PierreMesure/whisper-web/refs/heads/main/public/espanol.mp3";
         default:
             return `https://huggingface.co/datasets/Xenova/transformers.js-docs/resolve/main/${
                 isMobileOrTablet ? "jfk" : "ted_60_16k"
