@@ -140,6 +140,9 @@ export const MODELS: { [key: string]: [string, string] } = {
     "KBLab/kb-whisper-small": ["kb-whisper-small", "sv"],
     "KBLab/kb-whisper-medium": ["kb-whisper-medium", "sv"],
     "KBLab/kb-whisper-large": ["kb-whisper-large", "sv"],
+    "PierreMesure/nb-whisper-tiny": ["nb-whisper-tiny", "no"],
+    "PierreMesure/nb-whisper-base": ["nb-whisper-base", "no"],
+    "PierreMesure/nb-whisper-small": ["nb-whisper-small", "no"],
 };
 
 export const DTYPES: string[] = [
@@ -164,7 +167,7 @@ const isMobileOrTablet = mobileTabletCheck();
 function getDefaultAudioUrl(language: string): string {
     switch (language) {
         case "sv":
-            return "https://raw.githubusercontent.com/PierreMesure/whisper-web/refs/heads/main/public/palme.wav";
+            return "https://whisper-web.mesu.re/palme.wav";
         default:
             return `https://huggingface.co/datasets/Xenova/transformers.js-docs/resolve/main/${
                 isMobileOrTablet ? "jfk" : "ted_60_16k"
@@ -176,6 +179,10 @@ function getDefaultModel(language: string): string {
     switch (language) {
         case "sv":
             return `KBLab/kb-whisper-${isMobileOrTablet ? "tiny" : "base"}`;
+        case "no":
+            return `PierreMesure/nb-whisper-${
+                isMobileOrTablet ? "tiny" : "base"
+            }`;
         default:
             return `onnx-community/whisper-${
                 isMobileOrTablet ? "tiny" : "base"

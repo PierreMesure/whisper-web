@@ -25,7 +25,9 @@
             "settings": "Configuraciones",
             "gpu": "GPU",
             "gpu_disabled": "GPU (navegador no compatible)",
-            "clear_cache": "Borrar caché"
+            "clear_cache": "Borrar caché",
+            "info_title": "Whisper-web",
+            "info_content": "Whisper-web es un pequeño sitio web para ayudarte a transcribir audio a texto.<1></1><1></1>La primera vez que le das un archivo, descargará un modelo de IA abierta y realizará la transcripción localmente en tu navegador. Esto significa que tu archivo de audio nunca saldrá de tu dispositivo. También significa que la transcripción será lenta o fallará si tu computadora/teléfono inteligente no es lo suficientemente potente para realizarla.<1></1><1></1>En la configuración (esquina inferior derecha), puedes elegir entre diferentes modelos y varios niveles de cuantización. Un modelo más pequeño con menor cuantización será más rápido pero cometerá más errores. Por defecto, Whisper-web utiliza modelos pequeños, pero puedes probar uno más grande y ver si funciona en tu dispositivo.<1></1><1></1>Para la mayoría de los idiomas, es mejor usar <4>los modelos oficiales de OpenAI</4> (Multilingües), pero para el sueco o el noruego se recomienda usar versiones que han sido entrenadas específicamente para ellos.<1></1><1></1>Los modelos suecos se llaman <8>KB-whisper</8> y han sido entrenados por la <12>biblioteca nacional</12> con datos de debates parlamentarios y el servicio público sueco. Los noruegos se llaman <16>nb-whisper</16> y también han sido entrenados por la <20>biblioteca nacional</20> del país.<1></1><1></1>El código fuente de este proyecto está disponible en <23>Github</23>. Siéntete libre de reutilizarlo o contribuir a él.<1></1><1></1>El sitio web está alojado en <26>statichost.eu</26>, un servicio amigable con la privacidad para alojar sitios estáticos."
         },
         "recorder": {
             "start_recording": "Iniciar grabación",
@@ -43,6 +45,7 @@
         "language_selector": {
             "title": "Idioma",
             "sv": "Sueco",
+            "no": "Noruego",
             "en": "Inglés",
             "es": "Español"
         }

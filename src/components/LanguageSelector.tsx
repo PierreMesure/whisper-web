@@ -2,6 +2,7 @@ import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { useTranslation } from "react-i18next";
 import { availableLanguages } from "../i18n";
 import CircleFlagsLangSv from "~icons/circle-flags/lang-sv";
+import CircleFlagsLangNo from "~icons/circle-flags/lang-no";
 import CircleFlagsLangEn from "~icons/circle-flags/lang-en";
 import CircleFlagsLangEs from "~icons/circle-flags/lang-es";
 import { JSX } from "react";
@@ -15,6 +16,7 @@ export default function LanguageSelector(props: {
 
     const languageFlags: Record<string, JSX.Element> = {
         sv: <CircleFlagsLangSv className='inline-block' />,
+        no: <CircleFlagsLangNo className='inline-block' />,
         en: <CircleFlagsLangEn className='inline-block' />,
         es: <CircleFlagsLangEs className='inline-block' />,
     };

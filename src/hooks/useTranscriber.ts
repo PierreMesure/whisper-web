@@ -37,9 +37,9 @@ export interface Transcriber {
     model: string;
     setModel: (model: string) => void;
     dtype: string;
-    setDtype: (model: string) => void;
+    setDtype: (dtype: string) => void;
     gpu: boolean;
-    setGPU: (model: boolean) => void;
+    setGPU: (gpu: boolean) => void;
     subtask: string;
     setSubtask: (subtask: string) => void;
     language?: string;

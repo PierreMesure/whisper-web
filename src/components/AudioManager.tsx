@@ -14,7 +14,7 @@ import { Transcriber } from "../hooks/useTranscriber";
 import Progress from "./Progress";
 import AudioRecorder from "./AudioRecorder";
 import { t } from "i18next";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 
 function titleCase(str: string) {
     str = str.toLowerCase();
@@ -215,12 +215,126 @@ export function AudioManager(props: { transcriber: Transcriber }) {
                 </>
             )}
 
+            <InfoTile
+                className='fixed bottom-4 right-28'
+                icon={<InfoIcon />}
+                title={t("manager.info_title")}
+                content={
+                    <Trans i18nKey='manager.info_content'>
+                        Whisper-web is a small website to help you transcribe
+                        audio speech into text.
+                        <br />
+                        The first time you give it a file, it will download an
+                        open AI model and perform the transcription locally in
+                        your browser. This means that your audio file never
+                        leaves your device. It also means that the transcription
+                        will be slow or fail if your computer/smartphone is not
+                        powerful enough to perform it. In the settings (bottom
+                        right corner), you can pick among different models and
+                        various quantisation levels. A smaller model with a
+                        lower quantisation will be faster but make more
+                        mistakes. By default, Whisper-web uses small models but
+                        you can try a bigger one and see if it works on your
+                        device. For most languages, it is best to use{" "}
+                        <a
+                            className='underline'
+                            target='_blank'
+                            href='https://openai.com/index/whisper/'
+                        >
+                            OpenAI's official models
+                        </a>{" "}
+                        (Multilingual) but for Swedish or Norwegian, it is
+                        recommended to use versions that have been specifically
+                        trained for them. The Swedish models are called{" "}
+                        <a
+                            className='underline'
+                            target='_blank'
+                            href='https://huggingface.co/KBLab/kb-whisper-tiny'
+                        >
+                            KB-whisper
+                        </a>{" "}
+                        and have been trained by the{" "}
+                        <a
+                            className='underline'
+                            target='_blank'
+                            href='https://kb.se/samverkan-och-utveckling/nytt-fran-kb/nyheter-samverkan-och-utveckling/2025-02-20-valtranad-ai-modell-forvandlar-tal-till-text.html'
+                        >
+                            national library
+                        </a>{" "}
+                        on data from parliament debates and the Swedish public
+                        service. The Norwegian ones are named{" "}
+                        <a
+                            className='underline'
+                            target='_blank'
+                            href='https://huggingface.co/collections/NbAiLab/nb-whisper-65cb8322877f943912afcd9f'
+                        >
+                            nb-whisper
+                        </a>{" "}
+                        and have also been trained by the country's{" "}
+                        <a
+                            className='underline'
+                            target='_blank'
+                            href='https://arxiv.org/abs/2402.01917'
+                        >
+                            national library
+                        </a>
+                        . This project's source code is available on{" "}
+                        <a
+                            className='underline'
+                            target='_blank'
+                            href='https://github.com/PierreMesure/whisper-web'
+                        >
+                            Github
+                        </a>
+                        . Feel free to reuse or contribute to it. The website is
+                        hosted on{" "}
+                        <a
+                            className='underline'
+                            target='_blank'
+                            href='https://www.statichost.eu'
+                        >
+                            statichost.eu
+                        </a>
+                        , a privacy-friendly service to host static sites.
+                    </Trans>
+                }
+            />
             <SettingsTile
                 className='fixed bottom-4 right-4'
                 transcriber={props.transcriber}
                 icon={<SettingsIcon />}
             />
         </>
+    );
+}
+
+function InfoTile(props: {
+    icon: JSX.Element;
+    className?: string;
+    title: string;
+    content: string | JSX.Element;
+}) {
+    const [showModal, setShowModal] = useState(false);
+
+    const onClick = () => {
+        setShowModal(true);
+    };
+
+    const onClose = () => {
+        setShowModal(false);
+    };
+
+    return (
+        <div className={props.className}>
+            <Tile icon={props.icon} onClick={onClick} />
+            <Modal
+                show={showModal}
+                submitEnabled={false}
+                onClose={onClose}
+                title={props.title}
+                content={props.content}
+            />
+        </div>
     );
 }
 
@@ -511,7 +625,6 @@ function UrlModal(props: {
             onClose={props.onClose}
             submitText={t("manager.submit")}
             onSubmit={onSubmit}
-            cacheSize={0}
         />
     );
 }
@@ -641,7 +754,6 @@ function RecordModal(props: {
             submitText={t("manager.submit")}
             submitEnabled={audioBlob !== undefined}
             onSubmit={onSubmit}
-            cacheSize={0}
         />
     );
 }
@@ -708,7 +820,7 @@ function SettingsIcon() {
             xmlns='http://www.w3.org/2000/svg'
             fill='none'
             viewBox='0 0 24 24'
-            strokeWidth='1.25'
+            strokeWidth='1.75'
             stroke='currentColor'
         >
             <path
@@ -721,6 +833,18 @@ function SettingsIcon() {
                 strokeLinejoin='round'
                 d='M15 12a3 3 0 11-6 0 3 3 0 016 0z'
             />
+        </svg>
+    );
+}
+
+function InfoIcon() {
+    return (
+        <svg
+            xmlns='http://www.w3.org/2000/svg'
+            viewBox='0 0 24 24'
+            fill='currentColor'
+        >
+            <path d='M12 17q.425 0 .713-.288T13 16v-4q0-.425-.288-.712T12 11t-.712.288T11 12v4q0 .425.288.713T12 17m0-8q.425 0 .713-.288T13 8t-.288-.712T12 7t-.712.288T11 8t.288.713T12 9m0 13q-2.075 0-3.9-.788t-3.175-2.137T2.788 15.9T2 12t.788-3.9t2.137-3.175T8.1 2.788T12 2t3.9.788t3.175 2.137T21.213 8.1T22 12t-.788 3.9t-2.137 3.175t-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12t-2.325-5.675T12 4T6.325 6.325T4 12t2.325 5.675T12 20m0-8'></path>
         </svg>
     );
 }

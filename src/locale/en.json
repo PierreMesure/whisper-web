@@ -25,7 +25,9 @@
             "settings": "Settings",
             "gpu": "GPU",
             "gpu_disabled": "GPU (unsupported browser)",
-            "clear_cache": "Clear cache"
+            "clear_cache": "Clear cache",
+            "info_title": "Whisper-web",
+            "info_content": "Whisper-web is a small website to help you transcribe audio speech into text.<1></1><1></1>The first time you give it a file, it will download an open AI model and perform the transcription locally in your browser. This means that your audio file never leaves your device. It also means that the transcription will be slow or fail if your computer/smartphone is not powerful enough to perform it.<1></1><1></1>In the settings (bottom right corner), you can pick among different models and various quantisation levels. A smaller model with a lower quantisation will be faster but make more mistakes. By default, Whisper-web uses small models but you can try a bigger one and see if it works on your device.<1></1><1></1>For most languages, it is best to use <4>OpenAI's official models</4> (Multilingual) but for Swedish or Norwegian, it is recommended to use versions that have been specifically trained for them.<1></1><1></1>The Swedish models are called <8>KB-whisper</8> and have been trained by the <12>national library</12> on data from parliament debates and the Swedish public service. The Norwegian ones are named <16>nb-whisper</16> and have also been trained by the country's <20>national library</20>.<1></1><1></1>This project's source code is available on <23>Github</23>. Feel free to reuse or contribute to it.<1></1><1></1>The website is hosted on <26>statichost.eu</26>, a privacy-friendly service to host static sites."
         },
         "recorder": {
             "start_recording": "Start recording",
@@ -43,6 +45,7 @@
         "language_selector": {
             "title": "Language",
             "sv": "Swedish",
+            "no": "Norwegian",
             "en": "English",
             "es": "Spanish"
         }

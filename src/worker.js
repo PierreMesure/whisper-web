@@ -5,11 +5,15 @@ import { pipeline, WhisperTextStreamer } from "@huggingface/transformers";
 class PipelineFactory {
     static task = null;
     static model = null;
+    static dtype = null;
+    static gpu = false;
     static instance = null;
 
-    constructor(tokenizer, model) {
+    constructor(tokenizer, model, dtype, gpu) {
         this.tokenizer = tokenizer;
         this.model = model;
+        this.dtype = dtype;
+        this.gpu = gpu;
     }
 
     static async getInstance(progress_callback = null) {
@@ -43,15 +47,19 @@ self.addEventListener("message", async (event) => {
 class AutomaticSpeechRecognitionPipelineFactory extends PipelineFactory {
     static task = "automatic-speech-recognition";
     static model = null;
+    static dtype = null;
+    static gpu = false;
 }
 
-const transcribe = async ({ audio, model, subtask, language }) => {
+const transcribe = async ({ audio, model, dtype, gpu, subtask, language }) => {
     const isDistilWhisper = model.startsWith("distil-whisper/");
 
     const p = AutomaticSpeechRecognitionPipelineFactory;
-    if (p.model !== model) {
-        // Invalidate model if different
+    if (p.model !== model || p.dtype !== dtype || p.gpu !== gpu) {
+        // Invalidate model if different model, dtype, or gpu setting
         p.model = model;
+        p.dtype = dtype;
+        p.gpu = gpu;
 
         if (p.instance !== null) {
             (await p.getInstance()).dispose();

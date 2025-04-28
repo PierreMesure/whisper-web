@@ -5,12 +5,12 @@ import { Fragment, JSX } from "react";
 export interface Props {
     show: boolean;
     onClose: () => void;
-    onSubmit: () => void;
+    onSubmit?: () => void;
     submitText?: string;
     submitEnabled?: boolean;
     title: string | JSX.Element;
     content: string | JSX.Element;
-    cacheSize: number;
+    cacheSize?: number;
 }
 
 export default function Modal({
@@ -60,7 +60,7 @@ export default function Modal({
                                 >
                                     {title}
                                 </DialogTitle>
-                                <div className='mt-3 text-sm text-gray-500'>
+                                <div className='modal-content mt-3 text-sm text-gray-500'>
                                     {content}
                                 </div>
 

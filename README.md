@@ -12,14 +12,21 @@ Here are the main differences:
 - Up-to-date dependencies, including transformers.js
 - Ability to use WebGPU or CPU
 - More user-friendly interface
+- User interface in several languages
+- Available as a progressive web app (so usable offline if added to your homescreen)
+- Transcription is rendered continuously and not at the end
+- Export to SRT
+- Choose between a larger range of models (for example Swedish and Norwegian finetunes from the countries' national libraries)
+- Choose your own quantization level for the model
+- Clear cache with a button
 
-The main application is available at [whisper-web.mesu.re](https://whisper-web.mesu.re). It is hosted on Github Pages.
+The main application is available at [whisper-web.mesu.re](https://whisper-web.mesu.re). It is hosted on [statichost.eu](https://statichost.eu).
 
 ## KB-Whisper
 
-I have also translated the website to Swedish and added the [Swedish KB-Whisper models](https://huggingface.co/collections/KBLab/kb-whisper-67af9eafb24da903b63cc4aa) fine-tuned by the [Swedish National library](https://www.kb.se/samverkan-och-utveckling/nytt-fran-kb/nyheter-samverkan-och-utveckling/2025-02-20-valtranad-ai-modell-forvandlar-tal-till-text.html) ♥️ for easy transcription of Swedish audio.
+Initially, this project aimed at making the [Swedish KB-Whisper models](https://huggingface.co/collections/KBLab/kb-whisper-67af9eafb24da903b63cc4aa) fine-tuned by the [Swedish National library](https://www.kb.se/samverkan-och-utveckling/nytt-fran-kb/nyheter-samverkan-och-utveckling/2025-02-20-valtranad-ai-modell-forvandlar-tal-till-text.html) ♥️ more available for easy transcription of Swedish audio.
 
-This version is available at [kb-whisper.mesu.re](https://kb-whisper.mesu.re) (hosted in the EU by [statichost.eu](https://statichost.eu)) and the source code is on the [swedish branch](https://github.com/PierreMesure/whisper-web/tree/swedish).
+A version of the website with Swedish as default language is still available at [kb-whisper.mesu.re](https://kb-whisper.mesu.re) (hosted in the EU by [statichost.eu](https://statichost.eu)) and the source code is on the [swedish branch](https://github.com/PierreMesure/whisper-web/tree/swedish) but it is identical to the other version at [whisper-web.mesu.re](https://whisper-web.mesu.re).
 
 ## Running locally
 
