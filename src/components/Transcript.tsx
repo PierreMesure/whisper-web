@@ -82,7 +82,7 @@ export default function Transcript({ transcribedData }: Props) {
                     </div>
                 ))}
             {transcribedData && !transcribedData.isBusy && (
-                <div className='w-full text-center mx-2'>
+                <div className='w-full text-center'>
                     {exportButtons.map((button, i) => (
                         <button
                             key={i}
