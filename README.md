@@ -1,32 +1,42 @@
-# Whisper Web
+# RunAnywhere Voice Pipeline
 
-Whisper-web is a webapplication that allows you to transcribe sound files to text completely locally in your web browser.
+Ultra-low latency voice AI conversations in your browser - ~50% faster than ElevenLabs.
 
-![A screenshot of the application](./screenshot.png)
+![RunAnywhere Voice Pipeline](./public/run-anywhere-web-voice.png)
 
-This repository is a fork of [Xenova/whisper-web](https://github.com/xenova/whisper-web).
+## About RunAnywhere
 
-Here are the main differences:
+[RunAnywhere](https://www.runanywhere.ai/) is building the future of local AI inference, making powerful AI models run efficiently on any device. This voice pipeline demonstrates our commitment to high-performance, privacy-preserving AI that runs directly in your browser.
 
-- Actively maintained
-- Up-to-date dependencies, including transformers.js
-- Ability to use WebGPU or CPU
-- More user-friendly interface
-- User interface in several languages
-- Available as a progressive web app (so usable offline if added to your homescreen)
-- Transcription is rendered continuously and not at the end
-- Export to SRT
-- Choose between a larger range of models (for example Swedish and Norwegian finetunes from the countries' national libraries)
-- Choose your own quantization level for the model
-- Clear cache with a button
+Check out our [SDKs and tools](https://github.com/RunanywhereAI/runanywhere-sdks) for more ways to run AI locally.
 
-The main application is available at [whisper-web.mesu.re](https://whisper-web.mesu.re). It is hosted on [statichost.eu](https://statichost.eu).
+## What We Built
 
-## KB-Whisper
+A complete end-to-end voice AI pipeline with ultra-fast response times:
+- **Moonshine STT** → **OpenAI LLM** → **Kokoro TTS**
+- Fully local speech recognition and synthesis
+- ~50% faster than ElevenLabs cloud pipeline
+- Side-by-side comparison mode for benchmarking
+- Comprehensive performance metrics at every stage
 
-Initially, this project aimed at making the [Swedish KB-Whisper models](https://huggingface.co/collections/KBLab/kb-whisper-67af9eafb24da903b63cc4aa) fine-tuned by the [Swedish National library](https://www.kb.se/samverkan-och-utveckling/nytt-fran-kb/nyheter-samverkan-och-utveckling/2025-02-20-valtranad-ai-modell-forvandlar-tal-till-text.html) ♥️ more available for easy transcription of Swedish audio.
+## Key Features
 
-A version of the website with Swedish as default language is still available at [kb-whisper.mesu.re](https://kb-whisper.mesu.re) (hosted in the EU by [statichost.eu](https://statichost.eu)) and the source code is on the [swedish branch](https://github.com/PierreMesure/whisper-web/tree/swedish) but it is identical to the other version at [whisper-web.mesu.re](https://whisper-web.mesu.re).
+- Ultra-low latency conversational AI
+- WebGPU/WebAssembly acceleration  
+- Voice Activity Detection with echo prevention
+- 16 voice options (Kokoro) or native browser TTS
+- Progressive Web App (works offline)
+
+## Credits
+
+Built on top of amazing open source projects:
+- Original [Whisper Web](https://github.com/xenova/whisper-web) by Xenova
+- Enhanced fork by [Pierre Mesure](https://github.com/PierreMesure/whisper-web)
+- [Transformers.js](https://github.com/xenova/transformers.js) for WebAssembly ML
+- [Moonshine STT](https://github.com/usefulsensors/moonshine) models
+- [Kokoro TTS](https://huggingface.co/hexgrad/Kokoro-82M) by hexgrad
+
+For technical details, see [Voice Pipeline Architecture](./docs/VOICE_PIPELINE_ARCHITECTURE.md).
 
 ## Running locally
 

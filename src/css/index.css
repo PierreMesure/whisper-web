@@ -1,13 +1,39 @@
 @import "tailwindcss";
 
+:root {
+    --bg-primary: 255 255 255;
+    --bg-secondary: 249 250 251;
+    --text-primary: 15 23 42;
+    --text-secondary: 71 85 105;
+    --border-color: 226 232 240;
+    --accent-primary: 37 99 235;
+    --accent-hover: 29 78 216;
+}
+
+.dark {
+    --bg-primary: 15 23 42;
+    --bg-secondary: 30 41 59;
+    --text-primary: 248 250 252;
+    --text-secondary: 203 213 225;
+    --border-color: 51 65 85;
+    --accent-primary: 59 130 246;
+    --accent-hover: 96 165 250;
+}
+
 html,
 body,
 #root {
     height: 100%;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body {
+    background-color: rgb(var(--bg-primary));
+    color: rgb(var(--text-primary));
 }
 
 audio::-webkit-media-controls-panel {
-    background-color: white;
+    background-color: rgb(var(--bg-secondary));
 }
 
 .container {

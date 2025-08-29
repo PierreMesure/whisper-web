@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install)",
+      "Bash(npm run dev:*)",
+      "mcp__browserloop__screenshot",
+      "mcp__browserloop__read_console",
+      "Bash(export PATH=\"/Users/sanchitmonga/.nvm/versions/node/v24.6.0/bin:$PATH\")",
+      "Bash(npm install:*)",
+      "Bash(node:*)",
+      "WebSearch",
+      "WebFetch(domain:elevenlabs.io)",
+      "WebFetch(domain:github.com)",
+      "WebSearch",
+      "Bash(curl:*)",
+      "Bash(npm run type-check:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npm run lint:*)",
+      "Bash(npx eslint:*)",
+      "Bash(npx tsc:*)",
+      "Bash(sed:*)",
+      "Bash(grep:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
