@@ -112,21 +112,28 @@ export function useTranscriber(): Transcriber {
 
     const { i18n } = useTranslation();
 
-    const [model, setModel] = useState<string>(
+    const [model, setModel] = useState<string>(() =>
         Constants.getDefaultModel(i18n.language),
     );
 
     const [subtask, setSubtask] = useState<string>(Constants.DEFAULT_SUBTASK);
     const [dtype, setDtype] = useState<string>(Constants.DEFAULT_DTYPE);
     const [gpu, setGPU] = useState<boolean>(Constants.DEFAULT_GPU);
-    const [language, setLanguage] = useState<string>(
+    const [language, setLanguage] = useState<string>(() =>
         Constants.getDefaultLanguage(i18n.language),
     );
 
     useEffect(() => {
-        setModel(Constants.getDefaultModel(i18n.language));
-        setLanguage(Constants.getDefaultLanguage(i18n.language));
-    }, [i18n.language]);
+        const handleLanguageChanged = (lng: string) => {
+            setModel(Constants.getDefaultModel(lng));
+            setLanguage(Constants.getDefaultLanguage(lng));
+        };
+
+        i18n.on("languageChanged", handleLanguageChanged);
+        return () => {
+            i18n.off("languageChanged", handleLanguageChanged);
+        };
+    }, [i18n]);
 
     const onInputChange = useCallback(() => {
         setTranscript(undefined);

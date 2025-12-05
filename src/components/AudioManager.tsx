@@ -1,4 +1,11 @@
-import React, { useEffect, useState, useCallback, JSX } from "react";
+import React, {
+    useEffect,
+    useState,
+    useCallback,
+    JSX,
+    useMemo,
+    useRef,
+} from "react";
 import axios from "axios";
 import Modal from "./modal/Modal";
 import { UrlInput } from "./modal/UrlInput";
@@ -36,13 +43,15 @@ export function AudioManager(props: { transcriber: Transcriber }) {
           }
         | undefined
     >(undefined);
-    const [audioDownloadUrl, setAudioDownloadUrl] = useState<
-        string | undefined
-    >(undefined);
+    const requestAbortControllerRef = useRef<AbortController | null>(null);
 
     const resetAudio = () => {
         setAudioData(undefined);
-        setAudioDownloadUrl(undefined);
+
+        if (requestAbortControllerRef.current) {
+            requestAbortControllerRef.current.abort();
+            requestAbortControllerRef.current = null;
+        }
     };
 
     const setAudioFromDownload = async (
@@ -90,49 +99,56 @@ export function AudioManager(props: { transcriber: Transcriber }) {
     };
 
     const downloadAudioFromUrl = useCallback(
-        async (requestAbortController: AbortController) => {
-            if (audioDownloadUrl) {
-                try {
-                    setAudioData(undefined);
-                    setProgress(0);
-                    const { data, headers } = (await axios.get(
-                        audioDownloadUrl,
-                        {
-                            signal: requestAbortController.signal,
-                            responseType: "arraybuffer",
-                            onDownloadProgress(progressEvent) {
-                                setProgress(progressEvent.progress || 0);
-                            },
-                        },
-                    )) as {
-                        data: ArrayBuffer;
-                        headers: { "content-type": string };
-                    };
+        async (requestAbortController: AbortController, url: string) => {
+            try {
+                setAudioData(undefined);
+                setProgress(0);
+                const { data, headers } = (await axios.get(url, {
+                    signal: requestAbortController.signal,
+                    responseType: "arraybuffer",
+                    onDownloadProgress(progressEvent) {
+                        setProgress(progressEvent.progress || 0);
+                    },
+                })) as {
+                    data: ArrayBuffer;
+                    headers: { "content-type": string };
+                };
 
-                    let mimeType = headers["content-type"];
-                    if (!mimeType || mimeType === "audio/wave") {
-                        mimeType = "audio/wav";
-                    }
-                    setAudioFromDownload(data, mimeType);
-                } catch (error) {
-                    console.log("Request failed or aborted", error);
-                    setProgress(undefined);
+                let mimeType = headers["content-type"];
+                if (!mimeType || mimeType === "audio/wave") {
+                    mimeType = "audio/wav";
                 }
+                setAudioFromDownload(data, mimeType);
+            } catch (error) {
+                console.log("Request failed or aborted", error);
+                setProgress(undefined);
             }
         },
-        [audioDownloadUrl],
+        [],
     );
 
-    // When URL changes, download audio
     useEffect(() => {
-        if (audioDownloadUrl) {
+        return () => {
+            if (requestAbortControllerRef.current) {
+                requestAbortControllerRef.current.abort();
+            }
+        };
+    }, []);
+
+    const handleUrlUpdate = useCallback(
+        (url: string) => {
+            props.transcriber.onInputChange();
+
+            if (requestAbortControllerRef.current) {
+                requestAbortControllerRef.current.abort();
+            }
+
             const requestAbortController = new AbortController();
-            downloadAudioFromUrl(requestAbortController);
-            return () => {
-                requestAbortController.abort();
-            };
-        }
-    }, [audioDownloadUrl, downloadAudioFromUrl]);
+            requestAbortControllerRef.current = requestAbortController;
+            downloadAudioFromUrl(requestAbortController, url);
+        },
+        [downloadAudioFromUrl, props.transcriber],
+    );
 
     return (
         <>
@@ -141,10 +157,7 @@ export function AudioManager(props: { transcriber: Transcriber }) {
                     <UrlTile
                         icon={<AnchorIcon />}
                         text={t("manager.from_url")}
-                        onUrlUpdate={(e) => {
-                            props.transcriber.onInputChange();
-                            setAudioDownloadUrl(e);
-                        }}
+                        onUrlUpdate={handleUrlUpdate}
                     />
                     <VerticalBar />
                     <FileTile
@@ -378,13 +391,11 @@ function SettingsModal(props: {
 }) {
     const names = Object.values(LANGUAGES).map(titleCase);
 
-    const [isMultilingual, setIsMultilingual] = useState(false);
-
-    useEffect(() => {
+    const isMultilingual = useMemo(() => {
         const model = props.transcriber.model;
-        const isModelMultilingual =
-            !model.endsWith(".en") && MODELS[model] && MODELS[model][1] === "";
-        setIsMultilingual(isModelMultilingual);
+        return (
+            !model.endsWith(".en") && MODELS[model] && MODELS[model][1] === ""
+        );
     }, [props.transcriber.model]);
 
     // @ts-expect-error navigator.gpu not yet supported
@@ -601,8 +612,15 @@ function UrlModal(props: {
     const [url, setUrl] = useState(Constants.getDefaultAudioUrl(i18n.language));
 
     useEffect(() => {
-        setUrl(Constants.getDefaultAudioUrl(i18n.language));
-    }, [i18n.language]);
+        const handleLanguageChanged = (lng: string) => {
+            setUrl(Constants.getDefaultAudioUrl(lng));
+        };
+
+        i18n.on("languageChanged", handleLanguageChanged);
+        return () => {
+            i18n.off("languageChanged", handleLanguageChanged);
+        };
+    }, [i18n]);
 
     const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setUrl(event.target.value);
