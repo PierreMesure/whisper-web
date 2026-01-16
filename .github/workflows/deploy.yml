@@ -36,6 +36,8 @@ jobs:
 
       - name: Build project
         run: npm run build
+        env:
+          VITE_GOATCOUNTER_URL: ${{ vars.VITE_GOATCOUNTER_URL }}
 
       - name: Upload files
         uses: actions/upload-pages-artifact@v3
