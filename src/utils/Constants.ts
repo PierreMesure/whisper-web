@@ -205,6 +205,6 @@ export default {
     DEFAULT_SUBTASK: "transcribe",
     getDefaultLanguage,
     DEFAULT_QUANTIZED: isMobileOrTablet,
-    DEFAULT_DTYPE: "q8",
+    DEFAULT_DTYPE: "q4",
     DEFAULT_GPU: false,
 };
