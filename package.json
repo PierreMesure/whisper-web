@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@headlessui/react": "^2.2.9",
-    "@huggingface/transformers": "3.8.1",
+    "@huggingface/transformers": "4.0.0",
     "axios": "^1.14.0",
     "i18next": "^26.0.2",
     "react": "^19.2.4",
