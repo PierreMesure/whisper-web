@@ -1,4 +1,61 @@
 import { pipeline, WhisperTextStreamer } from "@huggingface/transformers";
+import { PARAKEET_MODELS } from "./utils/ParakeetModels";
+
+let parakeet = null;
+let parakeetKey = null;
+
+async function releaseParakeet() {
+    if (parakeet) {
+        await Promise.all([
+            parakeet.encoderSession.release(),
+            parakeet.joinerSession.release(),
+        ]);
+        parakeet = null;
+        parakeetKey = null;
+    }
+}
+
+async function getParakeet(model, dtype, gpu) {
+    const encoderQuant = dtype === "fp32" ? "fp32" : gpu ? "fp16" : "int8";
+    const key = `${model}:${encoderQuant}:${gpu}`;
+    if (parakeetKey === key) return parakeet;
+
+    await releaseParakeet();
+    const { getParakeetModel, fromUrls } = await import("parakeet.js");
+    const backend = gpu ? "webgpu" : "wasm";
+    self.postMessage({ status: "initiate", file: model, progress: 0 });
+    try {
+        const assets = await getParakeetModel(model, {
+            backend,
+            encoderQuant,
+            decoderQuant: "int8",
+            progress: ({ loaded, total }) => {
+                self.postMessage({
+                    status: "progress",
+                    file: model,
+                    progress: (loaded / total) * 100,
+                });
+            },
+        });
+        try {
+            parakeet = await fromUrls({
+                ...assets.urls,
+                filenames: assets.filenames,
+                preprocessorBackend: "js",
+                backend,
+            });
+        } finally {
+            Object.values(assets.urls).forEach((url) => {
+                if (url) URL.revokeObjectURL(url);
+            });
+        }
+        parakeetKey = key;
+        return parakeet;
+    } finally {
+        self.postMessage({ status: "done", file: model });
+        self.postMessage({ status: "ready" });
+    }
+}
 
 // Define model factories
 // Ensures only one model is created of each type
@@ -32,16 +89,17 @@ class PipelineFactory {
 self.addEventListener("message", async (event) => {
     const message = event.data;
 
-    // Do some work...
-    // TODO use message data
-    let transcript = await transcribe(message);
-    if (transcript === null) return;
+    try {
+        let transcript = await transcribe(message);
+        if (transcript === null) return;
 
-    // Send the result back to the main thread
-    self.postMessage({
-        status: "complete",
-        data: transcript,
-    });
+        self.postMessage({
+            status: "complete",
+            data: transcript,
+        });
+    } catch (error) {
+        self.postMessage({ status: "error", data: { message: error.message } });
+    }
 });
 
 class AutomaticSpeechRecognitionPipelineFactory extends PipelineFactory {
@@ -52,6 +110,21 @@ class AutomaticSpeechRecognitionPipelineFactory extends PipelineFactory {
 }
 
 const transcribe = async ({ audio, model, dtype, gpu, subtask, language }) => {
+    if (model in PARAKEET_MODELS) {
+        const instance = await getParakeet(model, dtype, gpu);
+        const result = await instance.transcribeLongAudio(audio, 16000, {
+            returnTimestamps: true,
+        });
+        return {
+            text: result.text,
+            chunks: result.chunks.map((chunk, index) => ({
+                ...chunk,
+                text: `${index ? " " : ""}${chunk.text}`,
+            })),
+        };
+    }
+
+    await releaseParakeet();
     const isDistilWhisper = model.startsWith("distil-whisper/");
 
     const p = AutomaticSpeechRecognitionPipelineFactory;

@@ -126,6 +126,7 @@ export function useTranscriber(): Transcriber {
     useEffect(() => {
         const handleLanguageChanged = (lng: string) => {
             setModel(Constants.getDefaultModel(lng));
+            setDtype(Constants.DEFAULT_DTYPE);
             setLanguage(Constants.getDefaultLanguage(lng));
         };
 

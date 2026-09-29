@@ -1,3 +1,5 @@
+import { PARAKEET_MODELS } from "./ParakeetModels";
+
 function mobileTabletCheck() {
     // https://stackoverflow.com/questions/11381673/detecting-a-mobile-browser
     let check = false;
@@ -143,6 +145,7 @@ export const MODELS: { [key: string]: [string, string] } = {
     "PierreMesure/nb-whisper-tiny-onnx": ["nb-whisper-tiny", "no"],
     "PierreMesure/nb-whisper-base-onnx": ["nb-whisper-base", "no"],
     "PierreMesure/nb-whisper-small-onnx": ["nb-whisper-small", "no"],
+    ...PARAKEET_MODELS,
 };
 
 export const DTYPES: string[] = [

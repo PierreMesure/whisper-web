@@ -17,6 +17,7 @@ import Constants, {
     LANGUAGES,
     MODELS,
 } from "../utils/Constants";
+import { PARAKEET_MODELS } from "../utils/ParakeetModels";
 import { Transcriber } from "../hooks/useTranscriber";
 import Progress from "./Progress";
 import AudioRecorder from "./AudioRecorder";
@@ -394,9 +395,13 @@ function SettingsModal(props: {
     const isMultilingual = useMemo(() => {
         const model = props.transcriber.model;
         return (
-            !model.endsWith(".en") && MODELS[model] && MODELS[model][1] === ""
+            !model.endsWith(".en") &&
+            !(model in PARAKEET_MODELS) &&
+            MODELS[model] &&
+            MODELS[model][1] === ""
         );
     }, [props.transcriber.model]);
+    const isParakeet = props.transcriber.model in PARAKEET_MODELS;
 
     // @ts-expect-error navigator.gpu not yet supported
     const IS_WEBGPU_AVAILABLE = !!navigator.gpu;
@@ -436,6 +441,13 @@ function SettingsModal(props: {
                         value={props.transcriber.model}
                         onChange={(e) => {
                             props.transcriber.setModel(e.target.value);
+                            props.transcriber.setDtype(
+                                e.target.value in PARAKEET_MODELS
+                                    ? props.transcriber.gpu
+                                        ? "fp16"
+                                        : "int8"
+                                    : Constants.DEFAULT_DTYPE,
+                            );
                         }}
                     >
                         {Object.entries(
@@ -478,12 +490,17 @@ function SettingsModal(props: {
                     </select>
                     <select
                         className='mt-1 mb-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
-                        defaultValue={props.transcriber.dtype}
+                        value={props.transcriber.dtype}
                         onChange={(e) => {
                             props.transcriber.setDtype(e.target.value);
                         }}
                     >
-                        {DTYPES.map((value, index) => (
+                        {(isParakeet
+                            ? props.transcriber.gpu
+                                ? ["fp16", "fp32"]
+                                : ["int8", "fp32"]
+                            : DTYPES
+                        ).map((value, index) => (
                             <option key={index} value={value}>
                                 {value}
                             </option>
@@ -498,6 +515,11 @@ function SettingsModal(props: {
                                 disabled={!IS_WEBGPU_AVAILABLE}
                                 onChange={(e) => {
                                     props.transcriber.setGPU(e.target.checked);
+                                    if (isParakeet) {
+                                        props.transcriber.setDtype(
+                                            e.target.checked ? "fp16" : "int8",
+                                        );
+                                    }
                                 }}
                             ></input>
                             <label htmlFor={"gpu"} className='ms-1'>
@@ -512,15 +534,21 @@ function SettingsModal(props: {
                     <select
                         className='mt-1 mb-3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 disabled:opacity-50 disabled:cursor-not-allowed'
                         value={
-                            isMultilingual
-                                ? props.transcriber.language
-                                : getModelLanguage()
+                            isParakeet &&
+                            PARAKEET_MODELS[props.transcriber.model][1] === ""
+                                ? "auto"
+                                : isMultilingual
+                                  ? props.transcriber.language
+                                  : getModelLanguage()
                         }
                         onChange={(e) => {
                             props.transcriber.setLanguage(e.target.value);
                         }}
                         disabled={!isMultilingual}
                     >
+                        {isParakeet &&
+                            PARAKEET_MODELS[props.transcriber.model][1] ===
+                                "" && <option value='auto'>Auto</option>}
                         {Object.keys(LANGUAGES).map((key, i) => (
                             <option key={key} value={key}>
                                 {names[i]}
@@ -539,7 +567,7 @@ function SettingsModal(props: {
                         onChange={(e) => {
                             props.transcriber.setSubtask(e.target.value);
                         }}
-                        disabled={!isMultilingual}
+                        disabled={!isMultilingual || isParakeet}
                     >
                         <option value={"transcribe"}>
                             {t("manager.transcribe")}
